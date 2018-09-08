@@ -2,3 +2,7 @@
 * TODOs
 
 1. Support custom queries
+
+2. Command line flags
+
+3. Make main/0 possible to run from inside emacs
