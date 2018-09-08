@@ -1,0 +1,8 @@
+
+* TODOs
+
+1. How to invoke as standalone app?
+
+2. Read CSV from stdin, with hardcoded 'query'
+
+3. Allow custom query
