@@ -9,8 +9,16 @@ main :-
   main(user_input).
 
 main(Input) :-
-  [Tab] = "\t",
+  % Put output in 'non-interactive' mode before parsing to avoid printing prompts
   set_stream(user_output, tty(false)),
+
+  % Process CSV
   stream_csv(Input, Csv),
   select_fields(Csv, [c,b,a], CsvOut),
-  csv_write_stream(user_output, CsvOut, [separator(Tab)]).
+
+  % Output
+  output_options(Options),
+  csv_write_stream(user_output, CsvOut, Options).
+
+output_options([separator(Tab)]) :-
+  [Tab] = "\t".
