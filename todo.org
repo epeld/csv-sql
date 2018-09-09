@@ -1,8 +1,8 @@
 
 * TODOs
 
-1. Support custom queries
+1. WHERE clause
 
-2. Command line flags
+2. "SELECT *"
 
 3. Make main/0 possible to run from inside emacs
