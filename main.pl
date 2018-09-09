@@ -4,6 +4,7 @@
 
 :- use_module(csv_util, [stream_csv/2]).
 :- use_module(ops, [select_fields/3]).
+:- use_module(sql, [parse_query/2]).
 
 main :-
   main(user_input).
@@ -14,7 +15,15 @@ main(Input) :-
 
   % Process CSV
   stream_csv(Input, Csv),
-  select_fields(Csv, [c,b,a], CsvOut),
+  current_prolog_flag(argv, Argv),
+  % format("Argv = ~w~n", [Argv]),
+  [First | _] = Argv,
+  atom_codes(First, CFirst),
+  % format("Parsing~n"),
+  parse_query(CFirst, Fields),
+  % format("F ~w~n", [Fields]),
+  maplist(atom_codes, AtomFields, Fields),
+  select_fields(Csv, AtomFields, CsvOut),
 
   % Output
   output_options(Options),
