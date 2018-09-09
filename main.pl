@@ -3,7 +3,7 @@
 :- set_prolog_flag(double_quotes, codes).
 
 :- use_module(csv_util, [stream_csv/2]).
-:- use_module(sql, [select_fields/3]).
+:- use_module(ops, [select_fields/3]).
 
 main :-
   main(user_input).
@@ -19,6 +19,7 @@ main(Input) :-
   % Output
   output_options(Options),
   csv_write_stream(user_output, CsvOut, Options).
+
 
 output_options([separator(Tab)]) :-
   [Tab] = "\t".
