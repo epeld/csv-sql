@@ -1,5 +1,8 @@
-:- module(sql, []).
+:- module(sql, [parse_query/2]).
 :- set_prolog_flag(double_quotes, codes).
+
+parse_query(Text, Fields) :-
+  phrase(select_query(Fields), Text).
 
 select_query(Fields) -->
   "select",
@@ -13,12 +16,20 @@ select_query(Fields) -->
 
 space --> [32].
 
+optional_space --> space ; [].
+
 
 comma_fields(all) --> "*".
 comma_fields([Field | Rest]) -->
   field(Field),
   comma_fields_1(Rest).
 
+
+comma_fields_1([Field | Rest]) -->
+  ",",
+  optional_space,
+  field(Field),
+  comma_fields_1(Rest).
 
 comma_fields_1([]) --> [].
 
