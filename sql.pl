@@ -1,17 +1,45 @@
 :- module(sql, [parse_query/2]).
+:- use_module(strings, [string//1]).
 :- set_prolog_flag(double_quotes, codes).
 
 parse_query(Text, Fields) :-
-  phrase(select_query(Fields), Text).
+  phrase(select_query(Fields, _Where), Text).
 
-select_query(Fields) -->
+select_query(Fields, Where) -->
   "select",
   space,
   comma_fields(Fields),
   space,
   "from",
   space,
-  "stdin".
+  "stdin",
+  optional_where_clause(Where).
+
+
+optional_where_clause(nothing) --> [].
+optional_where_clause(Where) --> space, where_clause(Where).
+
+
+where_clause(Where) -->
+  "where",
+  space,
+  where_condition(Where).
+
+
+where_condition(like(ColName, String)) -->
+  field(ColName),
+  space,
+  "like",
+  space,
+  string(String).
+
+where_condition(like(ColName, String)) -->
+  string(String),
+  space,
+  "like",
+  space,
+  field(ColName).
+  
 
 
 space --> [32].
