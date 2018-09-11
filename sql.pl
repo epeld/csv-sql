@@ -1,9 +1,16 @@
-:- module(sql, [parse_query/2]).
+:- module(sql, [parse_query/3]).
 :- use_module(strings, [string//1]).
 :- set_prolog_flag(double_quotes, codes).
 
-parse_query(Text, Fields) :-
-  phrase(select_query(Fields, _Where), Text).
+parse_query(Text, AtomFields, Where) :-
+  phrase(select_query(Fields, UglyWhere), Text),
+  pretty_where(UglyWhere, Where),
+  maplist(atom_codes, AtomFields, Fields).
+
+
+pretty_where(like(ColName, Codes), like(Atom, Codes)) :-
+  atom_codes(ColName, Atom).
+
 
 select_query(Fields, Where) -->
   "select",
