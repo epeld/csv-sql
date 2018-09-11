@@ -1,5 +1,26 @@
-:- module(ops, [select_fields/3]).
+:- module(ops, [select_fields/3, filter_rows/3]).
 :- set_prolog_flag(double_quotes, codes).
+
+%%
+%% FILTER
+%%
+filter_rows([ Header | Rows], Filter, [ Header | RowsOut ]) :-
+  include(satisfies_filter(Header, Filter), Rows, RowsOut).
+
+satisfies_filter(Header, like(Column, Codes), Row) :-
+  column_index(Header, Column, Ix),
+  column_index(Row, Value, Ix),
+
+  like(Value, Codes).
+
+
+like(A, B) :-
+  format("Comparing ~w and ~w~n", [A, B]).
+
+
+%%
+%% SELECT
+%%
 
 select_fields([ Header | Rows], Fields, [ HeaderOut | RowsOut ]) :-
   one_two_three_etc(Fields, Range),

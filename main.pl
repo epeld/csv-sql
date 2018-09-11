@@ -3,7 +3,7 @@
 :- set_prolog_flag(double_quotes, codes).
 
 :- use_module(csv_util, [stream_csv/2]).
-:- use_module(ops, [select_fields/3]).
+:- use_module(ops, [select_fields/3, filter_rows/3]).
 :- use_module(sql, [parse_query/2]).
 
 main :-
@@ -20,10 +20,9 @@ main(Input) :-
   [First | _] = Argv,
   atom_codes(First, CFirst),
   % format("Parsing~n"),
-  parse_query(CFirst, Fields),
-  % format("F ~w~n", [Fields]),
-  maplist(atom_codes, AtomFields, Fields),
-  select_fields(Csv, AtomFields, CsvOut),
+  parse_query(CFirst, Fields, Filter),
+  filter_rows(Csv, Filter, CsvFiltered),
+  select_fields(CsvFiltered, Fields, CsvOut),
 
   % Output
   output_options(Options),
