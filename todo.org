@@ -1,7 +1,7 @@
 
 * TODOs
 
-1. WHERE clause
+1. WHERE clause processing
 
 2. "SELECT *"
 
