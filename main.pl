@@ -7,19 +7,22 @@
 :- use_module(sql, [parse_query/3]).
 
 main :-
-  main(user_input).
+  current_prolog_flag(argv, Argv),
+  catch(
+    main(user_input, Argv),
+    Error,
+    format("Error: ~w~n", [Error])
+  ).
 
-main(Input) :-
+main(Input, Argv) :-
   % Put output in 'non-interactive' mode before parsing to avoid printing prompts
   set_stream(user_output, tty(false)),
 
   % Process CSV
   stream_csv(Input, Csv),
-  current_prolog_flag(argv, Argv),
-  % format("Argv = ~w~n", [Argv]),
   [First | _] = Argv,
+
   atom_codes(First, CFirst),
-  % format("Parsing~n"),
   parse_query(CFirst, Fields, Filter),
   filter_rows(Csv, Filter, CsvFiltered),
   select_fields(CsvFiltered, Fields, CsvOut),
