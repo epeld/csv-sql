@@ -1,8 +1,8 @@
 
 * TODOs
 
-1. WHERE clause processing
+1. WILDCARD 'LIKE'-processing
 
 2. "SELECT *"
 
-3. Make main/0 possible to run from inside emacs
+3. swap stdin for file path
