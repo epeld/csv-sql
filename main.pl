@@ -4,7 +4,7 @@
 
 :- use_module(csv_util, [stream_csv/2]).
 :- use_module(ops, [select_fields/3, filter_rows/3]).
-:- use_module(sql, [parse_query/2]).
+:- use_module(sql, [parse_query/3]).
 
 main :-
   main(user_input).
