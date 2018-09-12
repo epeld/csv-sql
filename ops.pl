@@ -17,7 +17,9 @@ satisfies_filter(Header, like(Column, Codes), Row) :-
 
 
 like(A, B) :-
-  format("Comparing ~w and ~w~n", [A, B]).
+  format(codes(ACodes), "~w", [A]),
+  % TODO support % and _ using dcg
+  append([B, _2], ACodes).
 
 
 %%
