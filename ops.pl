@@ -7,6 +7,8 @@
 filter_rows([ Header | Rows], Filter, [ Header | RowsOut ]) :-
   include(satisfies_filter(Header, Filter), Rows, RowsOut).
 
+
+satisfies_filter(_Header, nothing, _Row).
 satisfies_filter(Header, like(Column, Codes), Row) :-
   column_index(Header, Column, Ix),
   column_index(Row, Value, Ix),

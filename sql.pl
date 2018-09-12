@@ -11,6 +11,8 @@ parse_query(Text, AtomFields, Where) :-
 pretty_where(like(ColName, Codes), like(Atom, Codes)) :-
   atom_codes(ColName, Atom).
 
+pretty_where(nothing, nothing).
+
 
 select_query(Fields, Where) -->
   "select",
