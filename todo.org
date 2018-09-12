@@ -1,8 +1,12 @@
 
 * TODOs
 
-1. WILDCARD 'LIKE'-processing
+1) "SELECT *"
 
-2. "SELECT *"
+2) "WHERE foo = 3"
 
-3. swap stdin for file path
+3) SELECT * FROM file('abc.csv')
+
+4) ORDER BY hnn DESC
+
+5) upper/lowercase
