@@ -1,5 +1,5 @@
 
-:- module(main, [main/0]).
+:- module(main, [main/0, main/1]).
 :- set_prolog_flag(double_quotes, codes).
 
 :- use_module(csv_util, [stream_csv/2]).
@@ -8,15 +8,26 @@
 
 main :-
   current_prolog_flag(argv, Argv),
-  catch(
-    main(user_input, Argv),
-    Error,
-    format("Error: ~w~n", [Error])
+  main(Argv).
+
+main(Argv) :-
+  setup_call_cleanup(
+    (
+      input_stream(In),
+      % Put output in 'non-interactive' mode before parsing to avoid printing prompts
+      set_stream(user_output, tty(false))
+    ),
+    once(
+      main(In, Argv)
+    ),
+    (
+      set_stream(user_output, tty(true)),
+      close(In)
+    )
   ).
 
 main(Input, Argv) :-
-  % Put output in 'non-interactive' mode before parsing to avoid printing prompts
-  set_stream(user_output, tty(false)),
+  
 
   % Process CSV
   stream_csv(Input, Csv),
@@ -34,3 +45,9 @@ main(Input, Argv) :-
 
 output_options([separator(Tab)]) :-
   [Tab] = "\t".
+
+
+input_stream(user_input) :- !.
+
+input_stream(In) :-
+  open('abc.csv', read, In).
