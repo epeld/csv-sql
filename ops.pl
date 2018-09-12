@@ -27,7 +27,10 @@ like(A, B) :-
 %% SELECT
 %%
 
+select_fields([ Header | Rows], all, [ Header | Rows ]).
+
 select_fields([ Header | Rows], Fields, [ HeaderOut | RowsOut ]) :-
+  Fields \= all,
   one_two_three_etc(Fields, Range),
   same_length(Rows, RowsOut),  
   length(Fields, NumColumns),

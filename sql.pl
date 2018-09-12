@@ -5,8 +5,11 @@
 parse_query(Text, AtomFields, Where) :-
   phrase(select_query(Fields, UglyWhere), Text),
   pretty_where(UglyWhere, Where),
-  maplist(atom_codes, AtomFields, Fields).
+  pretty_fields(Fields, AtomFields).
 
+pretty_fields(all, all).
+pretty_fields(Fields, AtomFields) :-
+  maplist(atom_codes, AtomFields, Fields).
 
 pretty_where(like(ColName, Codes), like(Atom, Codes)) :-
   atom_codes(Atom, ColName).
