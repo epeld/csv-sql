@@ -1,12 +1,12 @@
 
 * TODOs
 
-1) "SELECT *"
+1) ORDER BY hnn DESC
 
 2) "WHERE foo = 3"
 
 3) SELECT * FROM file('abc.csv')
 
-4) ORDER BY hnn DESC
+4) upper/lowercase
 
-5) upper/lowercase
+5) optional LIMIT
