@@ -1,4 +1,5 @@
 :- module(ops, [select_fields/3, filter_rows/3]).
+:- use_module(strings, [match_like/2]).
 :- set_prolog_flag(double_quotes, codes).
 
 %%
@@ -9,6 +10,7 @@ filter_rows([ Header | Rows], Filter, [ Header | RowsOut ]) :-
 
 
 satisfies_filter(_Header, nothing, _Row).
+
 satisfies_filter(Header, like(Column, Codes), Row) :-
   column_index(Header, Column, Ix),
   column_index(Row, Value, Ix),
@@ -18,8 +20,7 @@ satisfies_filter(Header, like(Column, Codes), Row) :-
 
 like(A, B) :-
   format(codes(ACodes), "~w", [A]),
-  % TODO support % and _ using dcg
-  append([B, _2], ACodes).
+  match_like(B, ACodes).
 
 
 %%

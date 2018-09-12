@@ -1,7 +1,7 @@
 %
 % This module contains string parsing predicates
 %
-:- module(strings, [string//1, string//2]).
+:- module(strings, [string//1, string//2, match_like/2]).
 :- set_prolog_flag(double_quotes, codes).
 
 
@@ -40,3 +40,40 @@ quote_char(Char) -->
 
 quote_char(Char) :-
   member(Char, "'\"").
+
+
+%
+% This predicate performs a SQL-LIKE-like matching.
+% The argument can contain _ and % which act like wildcards
+%
+match_like(Pattern, String) :-
+  once(
+    phrase(like(Pattern), String)
+  ).
+
+like([]) --> [].
+
+like([C | Rest]) -->
+  [_],
+  {
+    [C] = "_"
+  },
+  like(Rest).
+
+like([C | Rest]) -->
+  {
+    [C] = "%"
+  },
+  anything_then_like(Rest).
+
+like([C | Rest]) -->
+  [C],
+  {
+    [C] \= "%",
+    [C] \= "_"
+  },
+  like(Rest).
+
+
+anything_then_like(Rest) --> like(Rest).
+anything_then_like(Rest) --> [_], anything_then_like(Rest).
