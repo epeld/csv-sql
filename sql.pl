@@ -2,10 +2,13 @@
 :- use_module(strings, [string//1]).
 :- set_prolog_flag(double_quotes, codes).
 
+% This parses the query and 'pretty-prints' the result
+% which means, "converts codes to atoms"
 parse_query(Text, AtomFields, Where) :-
-  phrase(select_query(Fields, UglyWhere), Text),
+  phrase(select_query(Fields, UglyWhere, OrderBy), Text),
   pretty_where(UglyWhere, Where),
-  pretty_fields(Fields, AtomFields).
+  pretty_fields(Fields, AtomFields),
+  pretty_order_by(OrderBy, _).
 
 pretty_fields(all, all).
 pretty_fields(Fields, AtomFields) :-
@@ -17,7 +20,19 @@ pretty_where(like(ColName, Codes), like(Atom, Codes)) :-
 pretty_where(nothing, nothing).
 
 
-select_query(Fields, Where) -->
+pretty_order_by(nothing, nothing).
+
+pretty_order_by([asc(F)], [asc(A)]) :-
+  atom_codes(A, F).
+
+pretty_order_by([desc(F)], [desc(A)]) :-
+  atom_codes(A, F).
+
+
+%
+% SQL query DCG
+%
+select_query(Fields, Where, OrderBy) -->
   "select",
   space,
   comma_fields(Fields),
@@ -25,7 +40,29 @@ select_query(Fields, Where) -->
   "from",
   space,
   "stdin",
-  optional_where_clause(Where).
+  optional_where_clause(Where),
+  optional_order_by(OrderBy).
+
+
+optional_order_by(nothing) --> [].
+optional_order_by([Field]) --> space, order_by([Field]).
+
+
+order_by([Field]) -->
+  "order by",
+  space,
+  asc_desc_field(Field).
+
+
+asc_desc_field(desc(Field)) -->
+  field(Field).
+
+
+asc_desc_field(asc(Field)) -->
+  field(Field) ;
+  (
+    field(Field), space, "asc"
+  ).
 
 
 optional_where_clause(nothing) --> [].
