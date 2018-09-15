@@ -1,6 +1,13 @@
-:- module(ops, [select_fields/3, filter_rows/3]).
+:- module(ops, [select_fields/3, filter_rows/3, order_rows/3]).
 :- use_module(strings, [match_like/2]).
 :- set_prolog_flag(double_quotes, codes).
+
+%%
+%% ORDER
+%%
+order_rows([ Header | Rows], OrderBy, [ Header | RowsOut]) :-
+  Rows = RowsOut.
+
 
 %%
 %% FILTER

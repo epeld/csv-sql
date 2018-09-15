@@ -1,14 +1,15 @@
-:- module(sql, [parse_query/3]).
+:- module(sql, [parse_query/4]).
 :- use_module(strings, [string//1]).
 :- set_prolog_flag(double_quotes, codes).
 
 % This parses the query and 'pretty-prints' the result
 % which means, "converts codes to atoms"
-parse_query(Text, AtomFields, Where) :-
+parse_query(Text, AtomFields, Where, OrderBy) :-
   phrase(select_query(Fields, UglyWhere, OrderBy), Text),
   pretty_where(UglyWhere, Where),
   pretty_fields(Fields, AtomFields),
   pretty_order_by(OrderBy, _).
+
 
 pretty_fields(all, all).
 pretty_fields(Fields, AtomFields) :-
