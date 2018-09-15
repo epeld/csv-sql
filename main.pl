@@ -4,7 +4,7 @@
 
 :- use_module(csv_util, [stream_csv/2]).
 :- use_module(ops, [select_fields/3, filter_rows/3]).
-:- use_module(sql, [parse_query/3]).
+:- use_module(sql, [parse_query/4]).
 
 main :-
   current_prolog_flag(argv, Argv),
@@ -34,7 +34,7 @@ main(Input, Argv) :-
   [First | _] = Argv,
 
   atom_codes(First, CFirst),
-  parse_query(CFirst, Fields, Filter),
+  parse_query(CFirst, Fields, Filter, _OrderBy),
   filter_rows(Csv, Filter, CsvFiltered),
   select_fields(CsvFiltered, Fields, CsvOut),
 
