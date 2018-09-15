@@ -5,8 +5,37 @@
 %%
 %% ORDER
 %%
+order_rows(R, nothing, R).
 order_rows([ Header | Rows], OrderBy, [ Header | RowsOut]) :-
-  Rows = RowsOut.
+  predsort(row_compare(Header, OrderBy), Rows, RowsOut).
+
+row_compare(Header, [O], Delta, Row1, Row2) :-
+  field_name(O, Name),
+  column_index(Header, Name, Ix),
+  column_index(Row1, Value1, Ix),
+  column_index(Row2, Value2, Ix),
+
+  field_compare(O, Delta, Value1, Value2).
+
+
+field_compare(asc(_), Order, Value1, Value2) :-
+  mycompare(Order, Value1, Value2).
+
+field_compare(desc(_), Order, Value1, Value2) :-
+  mycompare(Order, Value2, Value1).
+
+
+mycompare((<), Value1, Value2) :-
+  compare(Delta, Value1, Value2),
+  (
+    Delta = (<) ; Delta = (=)
+  ).
+
+mycompare((>), Value1, Value2) :-
+  compare((>), Value1, Value2).
+
+field_name(asc(Name), Name).
+field_name(desc(Name), Name).
 
 
 %%
