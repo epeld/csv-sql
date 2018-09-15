@@ -1,12 +1,20 @@
 
 * TODOs
 
-1) ORDER BY hnn DESC
+1) optional LIMIT
 
-2) "WHERE foo = 3"
+2) Use debug-library, provide better output on error?
 
-3) SELECT * FROM file('abc.csv')
+3) Variable number of spaces
 
-4) upper/lowercase
+4) Supress printing header row
 
-5) optional LIMIT
+5) "WHERE foo = 3"
+
+6) SELECT * FROM file('abc.csv')
+
+7) upper/lowercase
+
+8) testfall?
+
+9) plotta grafer från output?
