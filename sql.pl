@@ -5,10 +5,10 @@
 % This parses the query and 'pretty-prints' the result
 % which means, "converts codes to atoms"
 parse_query(Text, AtomFields, Where, OrderBy) :-
-  phrase(select_query(Fields, UglyWhere, OrderBy), Text),
+  phrase(select_query(Fields, UglyWhere, OrderByCodes), Text),
   pretty_where(UglyWhere, Where),
   pretty_fields(Fields, AtomFields),
-  pretty_order_by(OrderBy, _).
+  pretty_order_by(OrderByCodes, OrderBy).
 
 
 pretty_fields(all, all).
@@ -56,7 +56,9 @@ order_by([Field]) -->
 
 
 asc_desc_field(desc(Field)) -->
-  field(Field).
+  field(Field),
+  space,
+  "desc".
 
 
 asc_desc_field(asc(Field)) -->
