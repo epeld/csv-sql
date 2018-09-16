@@ -35,11 +35,11 @@ pretty_order_by([desc(F)], [desc(A)]) :-
 %
 select_query(Fields, Where, OrderBy, Limit) -->
   "select",
-  space,
+  space_plus,
   comma_fields(Fields),
-  space,
+  space_plus,
   "from",
-  space,
+  space_plus,
   "stdin",
   optional_where_clause(Where),
   optional_order_by(OrderBy),
@@ -47,11 +47,11 @@ select_query(Fields, Where, OrderBy, Limit) -->
 
 
 optional_limit(nothing) --> [].
-optional_limit(n(Limit)) --> space, limit(Limit).
+optional_limit(n(Limit)) --> space_plus, limit(Limit).
 
 limit(Limit) -->
   "limit",
-  space,
+  space_plus,
   number(Limit).
 
 
@@ -65,68 +65,69 @@ digits1([D | Rest]) --> [D], { member(D, "0123456789") }, digits1(Rest).
 
 
 optional_order_by(nothing) --> [].
-optional_order_by([Field]) --> space, order_by([Field]).
+optional_order_by([Field]) --> space_plus, order_by([Field]).
 
 
 order_by([Field]) -->
   "order by",
-  space,
+  space_plus,
   asc_desc_field(Field).
 
 
 asc_desc_field(desc(Field)) -->
   field(Field),
-  space,
+  space_plus,
   "desc".
 
 
 asc_desc_field(asc(Field)) -->
   field(Field) ;
   (
-    field(Field), space, "asc"
+    field(Field), space_plus, "asc"
   ).
 
 
 optional_where_clause(nothing) --> [].
-optional_where_clause(Where) --> space, where_clause(Where).
+optional_where_clause(Where) --> space_plus, where_clause(Where).
 
 
 where_clause(Where) -->
   "where",
-  space,
+  space_plus,
   where_condition(Where).
 
 
 where_condition(like(ColName, String)) -->
   field(ColName),
-  space,
+  space_plus,
   "like",
-  space,
+  space_plus,
   string(String).
 
 where_condition(like(ColName, String)) -->
   string(String),
-  space,
+  space_plus,
   "like",
-  space,
+  space_plus,
   field(ColName).
   
 
 
-space --> [32].
+space_plus --> [32], optional_space_plus.
 
-optional_space --> space ; [].
+optional_space_plus --> space_plus ; [].
 
 
 comma_fields(all) --> "*".
 comma_fields([Field | Rest]) -->
   field(Field),
+  optional_space_plus,
   comma_fields_1(Rest).
 
 
 comma_fields_1([Field | Rest]) -->
   ",",
-  optional_space,
+  optional_space_plus,
   field(Field),
   comma_fields_1(Rest).
 
