@@ -11,5 +11,5 @@ program_options(Options) :-
 
 parse_argv(Argv, ParsedOptions, Query):-
   program_options(Options),
-  opt_parse(Options, Argv, Parsed, Positional),
+  opt_parse(Options, Argv, ParsedOptions, Positional),
   Positional = [Query].
