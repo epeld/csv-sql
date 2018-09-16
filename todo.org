@@ -1,20 +1,18 @@
 
 * TODOs
 
-1) optional LIMIT
+1) Variable number of spaces
 
-2) Use debug-library, provide better output on error?
+2) upper/lowercase syntax
 
-3) Variable number of spaces
+3) "WHERE foo = 3"
 
-4) Supress printing header row
+4) SELECT * FROM file('abc.csv')
 
-5) "WHERE foo = 3"
+5) better printing on parse-errors
 
-6) SELECT * FROM file('abc.csv')
+6) Use debug-library
 
-7) upper/lowercase
+7) testfall?
 
-8) testfall?
-
-9) plotta grafer från output?
+8) plotta grafer från output?
