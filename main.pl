@@ -40,15 +40,23 @@ main(Input, CmdLineOptions, Query) :-
   select_fields(CsvOrdered, Fields, CsvOut),
 
   % Output
-  output_options(Options),
-  csv_write_stream(user_output, CsvOut, Options).
+  output_csv(user_output, CsvOut, CmdLineOptions).
 
+output_csv(Stream, Csv, Options) :-
+  option(quiet(Quiet), Options, quiet(false)),
+  quiet_csv(Quiet, Csv, Csv1),
+  output_options(CsvOptions),
+  csv_write_stream(Stream, Csv1, CsvOptions).
+
+
+quiet_csv(true, [ _H | Rest ], Rest).
+quiet_csv(false, Csv, Csv).
 
 output_options([separator(Tab)]) :-
   [Tab] = "\t".
 
 
-input_stream(user_input) :- !.
+% input_stream(user_input) :- !.
 
 input_stream(In) :-
   open('abc.csv', read, In).
