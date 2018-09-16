@@ -1,11 +1,11 @@
-:- module(sql, [parse_query/4]).
+:- module(sql, [parse_query/5]).
 :- use_module(strings, [string//1]).
 :- set_prolog_flag(double_quotes, codes).
 
 % This parses the query and 'pretty-prints' the result
 % which means, "converts codes to atoms"
-parse_query(Text, AtomFields, Where, OrderBy) :-
-  phrase(select_query(Fields, UglyWhere, OrderByCodes), Text),
+parse_query(Text, AtomFields, Where, OrderBy, Limit) :-
+  phrase(select_query(Fields, UglyWhere, OrderByCodes, Limit), Text),
   pretty_where(UglyWhere, Where),
   pretty_fields(Fields, AtomFields),
   pretty_order_by(OrderByCodes, OrderBy).
@@ -33,7 +33,7 @@ pretty_order_by([desc(F)], [desc(A)]) :-
 %
 % SQL query DCG
 %
-select_query(Fields, Where, OrderBy) -->
+select_query(Fields, Where, OrderBy, Limit) -->
   "select",
   space,
   comma_fields(Fields),
@@ -42,7 +42,26 @@ select_query(Fields, Where, OrderBy) -->
   space,
   "stdin",
   optional_where_clause(Where),
-  optional_order_by(OrderBy).
+  optional_order_by(OrderBy),
+  optional_limit(Limit).
+
+
+optional_limit(nothing) --> [].
+optional_limit(n(Limit)) --> space, limit(Limit).
+
+limit(Limit) -->
+  "limit",
+  space,
+  number(Limit).
+
+
+number(N) --> digits(D), { number_codes(N, D) }.
+
+digits([D | Rest]) --> [D], { member(D, "0123456789") }, digits1(Rest).
+
+digits1([]) --> [].
+digits1([D | Rest]) --> [D], { member(D, "0123456789") }, digits1(Rest).
+
 
 
 optional_order_by(nothing) --> [].

@@ -5,7 +5,7 @@
 :- use_module(csv_util, [stream_csv/2]).
 :- use_module(options, [parse_argv/3]).
 :- use_module(ops, [select_fields/3, filter_rows/3, order_rows/3]).
-:- use_module(sql, [parse_query/4]).
+:- use_module(sql, [parse_query/5]).
 
 main :-
   current_prolog_flag(argv, Argv),
@@ -34,19 +34,30 @@ main(Input, CmdLineOptions, Query) :-
   stream_csv(Input, Csv),
 
   atom_codes(Query, CQuery),
-  parse_query(CQuery, Fields, Filter, OrderBy),
+  parse_query(CQuery, Fields, Filter, OrderBy, Limit),
   filter_rows(Csv, Filter, CsvFiltered),
   order_rows(CsvFiltered, OrderBy, CsvOrdered),
   select_fields(CsvOrdered, Fields, CsvOut),
+  limit(Limit, CsvOut, CsvLimited),
 
   % Output
-  output_csv(user_output, CsvOut, CmdLineOptions).
+  output_csv(user_output, CsvLimited, CmdLineOptions).
 
 output_csv(Stream, Csv, Options) :-
   option(quiet(Quiet), Options, quiet(false)),
   quiet_csv(Quiet, Csv, Csv1),
   output_options(CsvOptions),
   csv_write_stream(Stream, Csv1, CsvOptions).
+
+
+limit(nothing, L, L).
+limit(n(N), [ H | L ], [ H | L0]) :-
+  number(N),
+  min_member(N0, [Length, N0]),
+  length(L, Length),
+  length(L0, N0),
+
+  append(L0, _, L).
 
 
 quiet_csv(true, [ _H | Rest ], Rest).
