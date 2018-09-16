@@ -34,13 +34,13 @@ pretty_order_by([desc(F)], [desc(A)]) :-
 % SQL query DCG
 %
 select_query(Fields, Where, OrderBy, Limit) -->
-  "select",
+  keyword_string("select"),
   space_plus,
   comma_fields(Fields),
   space_plus,
-  "from",
+  keyword_string("from"),
   space_plus,
-  "stdin",
+  keyword_string("stdin"),
   optional_where_clause(Where),
   optional_order_by(OrderBy),
   optional_limit(Limit).
@@ -50,7 +50,7 @@ optional_limit(nothing) --> [].
 optional_limit(n(Limit)) --> space_plus, limit(Limit).
 
 limit(Limit) -->
-  "limit",
+  keyword_string("limit"),
   space_plus,
   number(Limit).
 
@@ -69,7 +69,7 @@ optional_order_by([Field]) --> space_plus, order_by([Field]).
 
 
 order_by([Field]) -->
-  "order by",
+  keyword_string("order by"),
   space_plus,
   asc_desc_field(Field).
 
@@ -77,13 +77,13 @@ order_by([Field]) -->
 asc_desc_field(desc(Field)) -->
   field(Field),
   space_plus,
-  "desc".
+  keyword_string("desc").
 
 
 asc_desc_field(asc(Field)) -->
   field(Field) ;
   (
-    field(Field), space_plus, "asc"
+    field(Field), space_plus, keyword_string("asc")
   ).
 
 
@@ -92,7 +92,7 @@ optional_where_clause(Where) --> space_plus, where_clause(Where).
 
 
 where_clause(Where) -->
-  "where",
+  keyword_string("where"),
   space_plus,
   where_condition(Where).
 
@@ -100,14 +100,14 @@ where_clause(Where) -->
 where_condition(like(ColName, String)) -->
   field(ColName),
   space_plus,
-  "like",
+  keyword_string("like"),
   space_plus,
   string(String).
 
 where_condition(like(ColName, String)) -->
   string(String),
   space_plus,
-  "like",
+  keyword_string("like"),
   space_plus,
   field(ColName).
   
@@ -159,3 +159,14 @@ alpha_char(Char) :-
 
 alpha_char(Char) :-
   member(Char, "abcdefghijklmnopqrstuvwxyz").
+
+
+keyword_string(Codes) -->
+  {
+    atom_codes(Atom, Codes),
+    downcase_atom(Atom, Down),
+    upcase_atom(Atom, Up),
+    atom_codes(Down, DownCodes),
+    atom_codes(Up, UpCodes)
+  },
+  (DownCodes ; UpCodes).
