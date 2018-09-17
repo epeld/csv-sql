@@ -1,14 +1,20 @@
 
 * TODOs
 
-1) SELECT * FROM file('abc.csv')
+1) "WHERE foo = 3"
 
-2) "WHERE foo = 3"
+2) WHERE ROW LIKE "asfsd"
 
-3) better printing on parse-errors
+3) Command line option for different csv separator?
 
-4) Use debug-library
+4) Refer to cols by ordinal: order by 1
 
-5) testfall?
+5) JOINS?
 
-6) plotta grafer från output?
+6) better printing on parse-errors
+
+7) Use debug-library
+
+8) testfall?
+
+9) plotta grafer från output?
