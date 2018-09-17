@@ -13,28 +13,22 @@ main :-
 
 main(Argv) :-
   parse_argv(Argv, Options, Query),
+  stream_property(user_output, tty(Tty)),
   setup_call_cleanup(
-    (
-      input_stream(In),
-      % Put output in 'non-interactive' mode before parsing to avoid printing prompts
-      set_stream(user_output, tty(false))
-    ),
+    % Put output in 'non-interactive' mode before parsing to avoid printing prompts
+    set_stream(user_output, tty(false)),
     once(
-      main(In, Options, Query)
+      main(Options, Query)
     ),
-    (
-      set_stream(user_output, tty(true)),
-      close(In)
-    )
+    set_stream(user_output, tty(Tty))
   ).
 
-main(Input, CmdLineOptions, Query) :-
-
-  % Process CSV
-  stream_csv(Input, Csv),
-
+main(CmdLineOptions, Query) :-
   atom_codes(Query, CQuery),
   parse_query(CQuery, Fields, Filter, OrderBy, Limit),
+
+  csv_from_input(stdin, Csv),
+
   filter_rows(Csv, Filter, CsvFiltered),
   order_rows(CsvFiltered, OrderBy, CsvOrdered),
   select_fields(CsvOrdered, Fields, CsvOut),
@@ -42,6 +36,19 @@ main(Input, CmdLineOptions, Query) :-
 
   % Output
   output_csv(user_output, CsvLimited, CmdLineOptions).
+
+
+csv_from_input(stdin, Csv) :-
+  stream_csv(Csv).
+
+csv_from_input(file(Name), Csv) :-
+  setup_call_cleanup(
+    open(Name, read, Input),
+    stream_csv(Input, Csv),
+    close(Input)
+  ).
+
+
 
 output_csv(Stream, Csv, Options) :-
   option(quiet(Quiet), Options, quiet(false)),
@@ -66,8 +73,3 @@ quiet_csv(false, Csv, Csv).
 output_options([separator(Tab)]) :-
   [Tab] = "\t".
 
-
-% input_stream(user_input) :- !.
-
-input_stream(In) :-
-  open('abc.csv', read, In).
