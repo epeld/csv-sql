@@ -5,7 +5,7 @@
 :- use_module(csv_util, [stream_csv/2]).
 :- use_module(options, [parse_argv/3]).
 :- use_module(ops, [select_fields/3, filter_rows/3, order_rows/3]).
-:- use_module(sql, [parse_query/5]).
+:- use_module(sql, [parse_query/6]).
 
 main :-
   current_prolog_flag(argv, Argv),
@@ -25,9 +25,9 @@ main(Argv) :-
 
 main(CmdLineOptions, Query) :-
   atom_codes(Query, CQuery),
-  parse_query(CQuery, Fields, Filter, OrderBy, Limit),
+  parse_query(CQuery, Fields, InputSource, Filter, OrderBy, Limit),
 
-  csv_from_input(stdin, Csv),
+  csv_from_input(InputSource, Csv),
 
   filter_rows(Csv, Filter, CsvFiltered),
   order_rows(CsvFiltered, OrderBy, CsvOrdered),

@@ -1,15 +1,20 @@
-:- module(sql, [parse_query/5]).
+:- module(sql, [parse_query/6]).
 :- use_module(strings, [string//1]).
 :- set_prolog_flag(double_quotes, codes).
 
 % This parses the query and 'pretty-prints' the result
 % which means, "converts codes to atoms"
-parse_query(Text, AtomFields, Where, OrderBy, Limit) :-
-  phrase(select_query(Fields, UglyWhere, OrderByCodes, Limit), Text),
+parse_query(Text, AtomFields, InputSource, Where, OrderBy, Limit) :-
+  phrase(select_query(Fields, UglyInputSource, UglyWhere, OrderByCodes, Limit), Text),
+  pretty_input_source(UglyInputSource, InputSource),
   pretty_where(UglyWhere, Where),
   pretty_fields(Fields, AtomFields),
   pretty_order_by(OrderByCodes, OrderBy).
 
+
+pretty_input_source(stdin, stdin).
+pretty_input_source(file(Codes), file(Atom)) :-
+  atom_codes(Atom, Codes).
 
 pretty_fields(all, all).
 pretty_fields(Fields, AtomFields) :-
@@ -33,17 +38,27 @@ pretty_order_by([desc(F)], [desc(A)]) :-
 %
 % SQL query DCG
 %
-select_query(Fields, Where, OrderBy, Limit) -->
+select_query(Fields, InputSource, Where, OrderBy, Limit) -->
   keyword_string("select"),
   space_plus,
   comma_fields(Fields),
   space_plus,
   keyword_string("from"),
   space_plus,
-  keyword_string("stdin"),
+  input_source(InputSource),
   optional_where_clause(Where),
   optional_order_by(OrderBy),
   optional_limit(Limit).
+
+
+input_source(stdin) -->
+  keyword_string("stdin").
+
+input_source(file(Name)) -->
+  keyword_string("file"),
+  keyword_string("("),
+  string(Name, _QuoteChar),
+  keyword_string(")").
 
 
 optional_limit(nothing) --> [].
