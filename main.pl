@@ -39,7 +39,7 @@ main(CmdLineOptions, Query) :-
 
 
 csv_from_input(stdin, Csv) :-
-  stream_csv(Csv).
+  stream_csv(user_input, Csv).
 
 csv_from_input(file(Name), Csv) :-
   setup_call_cleanup(
