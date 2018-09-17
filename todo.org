@@ -1,18 +1,14 @@
 
 * TODOs
 
-1) Variable number of spaces
+1) SELECT * FROM file('abc.csv')
 
-2) upper/lowercase syntax
+2) "WHERE foo = 3"
 
-3) "WHERE foo = 3"
+3) better printing on parse-errors
 
-4) SELECT * FROM file('abc.csv')
+4) Use debug-library
 
-5) better printing on parse-errors
+5) testfall?
 
-6) Use debug-library
-
-7) testfall?
-
-8) plotta grafer från output?
+6) plotta grafer från output?
